@@ -64,7 +64,8 @@ async function run() {
     });
 
     // application related api
-    app.get("/api/application", async (req, res) => {
+    app.get("/api/applications", async (req, res) => {
+      console.log("this is applicant id form client:", req.query.applicantId);
       const query = {};
       if (req.query.applicantId) {
         query.applicantId = req.query.applicantId;

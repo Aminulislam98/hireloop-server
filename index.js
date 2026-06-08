@@ -30,6 +30,9 @@ async function run() {
     const db = client.db("hireloop");
     const jobCollection = db.collection("jobs");
     const companyCollection = db.collection("companyCollection");
+    const applicationsCollection = db.collection("applications");
+
+    // jobs related api
 
     app.get("/api/jobs", async (req, res) => {
       const query = {};
@@ -59,6 +62,17 @@ async function run() {
       const query = { _id: new ObjectId(id) };
       const result = await jobCollection.findOne(query);
       res.json(result);
+    });
+
+    // application related api
+    app.post("/api/applications", async (req, res) => {
+      const application = req.body;
+      const newApplication = {
+        ...application,
+        createdAt: new Date(),
+      };
+      const result = await applicationsCollection.insertOne(newApplication);
+      res.json({ success: true, result });
     });
 
     // company's API

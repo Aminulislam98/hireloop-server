@@ -33,7 +33,6 @@ async function run() {
     const applicationsCollection = db.collection("applications");
 
     // jobs related api
-
     app.get("/api/jobs", async (req, res) => {
       const query = {};
       if (req.query.companyId) {
@@ -65,6 +64,17 @@ async function run() {
     });
 
     // application related api
+    app.get("/api/application", async (req, res) => {
+      const query = {};
+      if (req.query.applicantId) {
+        query.applicantId = req.query.applicantId;
+      }
+      if (req.query.jobId) {
+        query.jobId = req.query.jobId;
+      }
+      const result = await applicationsCollection.find(query).toArray();
+      res.json({ success: true, result });
+    });
     app.post("/api/applications", async (req, res) => {
       const application = req.body;
       const newApplication = {

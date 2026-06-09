@@ -31,7 +31,8 @@ async function run() {
     const jobCollection = db.collection("jobs");
     const companyCollection = db.collection("companyCollection");
     const applicationsCollection = db.collection("applications");
-
+    const planCollection = db.collection("plans");
+    const subscriptionCollection = db.collection("subscriptions");
     // jobs related api
     app.get("/api/jobs", async (req, res) => {
       const query = {};
@@ -110,6 +111,31 @@ async function run() {
       };
       const result = await companyCollection.insertOne(newCompany);
       res.json({ success: true, result });
+    });
+
+    // plans
+    app.get("/api/plans", async (req, res) => {
+      const query = {};
+      if (req.query.planName) {
+        query.planName = req.query.planName;
+      }
+      const result = await planCollection.findOne(query);
+      res.json({ success: true, result });
+    });
+
+    //subscription related api
+    app.post("/api/subscriptions", async (req, res) => {
+      const data = req.body;
+      const subsInfo = {
+        ...data,
+        createdAt: new Date(),
+      };
+      const result = await subscriptionCollection.insertOne(subsInfo);
+      res.json({
+        success: true,
+        message: "subscription inserted successfully!",
+        result,
+      });
     });
 
     // Send a ping to confirm a successful connection

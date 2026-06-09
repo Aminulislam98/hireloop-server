@@ -30,6 +30,7 @@ async function run() {
     const db = client.db("hireloop");
     const jobCollection = db.collection("jobs");
     const companyCollection = db.collection("companyCollection");
+    const usersCollection = db.collection("user");
     const applicationsCollection = db.collection("applications");
     const planCollection = db.collection("plans");
     const subscriptionCollection = db.collection("subscriptions");
@@ -115,9 +116,10 @@ async function run() {
 
     // plans
     app.get("/api/plans", async (req, res) => {
+      console.log("this is plan name: form backend:", req.query.planId);
       const query = {};
-      if (req.query.planName) {
-        query.planName = req.query.planName;
+      if (req.query.planId) {
+        query.planName = req.query.planId;
       }
       const result = await planCollection.findOne(query);
       res.json({ success: true, result });
@@ -131,6 +133,18 @@ async function run() {
         createdAt: new Date(),
       };
       const result = await subscriptionCollection.insertOne(subsInfo);
+      // update the user information
+      const filter = { email: data.email };
+      const updateDocument = {
+        $set: {
+          plan: data.planId,
+        },
+      };
+      const updateResult = await usersCollection.updateOne(
+        filter,
+        updateDocument,
+      );
+      res.json({ success: true, updateResult });
       res.json({
         success: true,
         message: "subscription inserted successfully!",

@@ -153,6 +153,19 @@ async function run() {
       });
     });
 
+    app.patch("/api/companies/:id", async (req, res) => {
+      const id = req.params.id;
+      const updatedCompany = req.body;
+      const filter = { _id: new ObjectId(id) };
+      const updatedDoc = {
+        $set: {
+          status: updatedCompany.status,
+        },
+      };
+      const result = await companyCollection.updateOne(filter, updatedDoc);
+      res.json({ success: true, result });
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(

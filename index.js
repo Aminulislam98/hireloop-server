@@ -97,6 +97,7 @@ async function run() {
 
     app.get("/api/my/companies", async (req, res) => {
       const query = {};
+
       if (req.query.recruiterId) {
         query.recruiterId = req.query.recruiterId;
       }

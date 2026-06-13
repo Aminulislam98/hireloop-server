@@ -13,6 +13,16 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
+const logger = (req, res, next) => {
+  console.log("Logger Middleware Logged!", req.params);
+  next();
+};
+
+const verifyToken = (req, res, next) => {
+  console.log("Headers:", req.headers.authorization.split(" ")[1]);
+  next();
+};
+
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
   serverApi: {
@@ -167,7 +177,7 @@ async function run() {
       });
     });
 
-    app.patch("/api/companies/:id", async (req, res) => {
+    app.patch("/api/companies/:id", logger, verifyToken, async (req, res) => {
       const id = req.params.id;
       const updatedCompany = req.body;
       const filter = { _id: new ObjectId(id) };
